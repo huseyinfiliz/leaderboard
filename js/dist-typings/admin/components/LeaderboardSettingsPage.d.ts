@@ -1,0 +1,31 @@
+import ExtensionPage from 'flarum/admin/components/ExtensionPage';
+import type Mithril from 'mithril';
+export default class LeaderboardSettingsPage extends ExtensionPage {
+    private rebuilding;
+    private activeTab;
+    private expandedSections;
+    private selectedGroupIds;
+    private selectedTagIds;
+    private pointsChanged;
+    private tagsChanged;
+    private initialPointValues;
+    private initialTagIds;
+    oninit(vnode: Mithril.Vnode): void;
+    captureInitialPointValues(): void;
+    onsaved(): void;
+    initGroupSelection(): void;
+    initTagSelection(): void;
+    isExtensionEnabled(id: string): boolean;
+    content(): JSX.Element;
+    tabButton(tab: string, iconClass: string, labelKey: string): Mithril.Children;
+    generalTab(): Mithril.Children;
+    toggleSection(key: string): void;
+    pointsTab(): Mithril.Children;
+    buildAccordionSection(key: string, icon: string, title: string | Mithril.Children, extensionId: string | null, content: Mithril.Children[]): Mithril.Children;
+    buildPointInput(reason: string, disabled?: boolean): Mithril.Children;
+    exclusionsTab(): Mithril.Children;
+    tagsExclusionSection(): Mithril.Children;
+    maintenanceTab(): Mithril.Children;
+    openRecalculateModal(): void;
+    rebuildTotals(): Promise<void>;
+}
