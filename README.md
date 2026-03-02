@@ -1,4 +1,4 @@
-![Leaderboard]([https://placeholder.img/leaderboard-banner.jpg](https://cdn.discuss.flarum.org/2026-03-02/1772440655-531360-leaderboard.png))
+![Leaderboard](https://cdn.discuss.flarum.org/2026-03-02/1772440655-531360-leaderboard.png)
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md) [![Latest Stable Version](https://img.shields.io/packagist/v/huseyinfiliz/leaderboard.svg)](https://packagist.org/packages/huseyinfiliz/leaderboard) [![Total Downloads](https://img.shields.io/packagist/dt/huseyinfiliz/leaderboard.svg)](https://packagist.org/packages/huseyinfiliz/leaderboard)
 
