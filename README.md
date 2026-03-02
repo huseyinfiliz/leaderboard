@@ -12,7 +12,7 @@ A points-based leaderboard extension for [Flarum](https://flarum.org) forums. Aw
 
 ### 📊 Top Contenders & Honorable Mentions
 
-![Contenders Demo](https://cdn.discuss.flarum.org/2026-03-02/1772440801-974877-image.png)
+![Contenders Demo](https://cdn.discuss.flarum.org/2026-03-02/1772442660-799919-image.png)
 
 ### ⚙️ Admin General Settings
 
