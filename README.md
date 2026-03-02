@@ -1,4 +1,4 @@
-![Leaderboard](https://placeholder.img/leaderboard-banner.jpg)
+![Leaderboard]([https://placeholder.img/leaderboard-banner.jpg](https://cdn.discuss.flarum.org/2026-03-02/1772440655-531360-leaderboard.png))
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md) [![Latest Stable Version](https://img.shields.io/packagist/v/huseyinfiliz/leaderboard.svg)](https://packagist.org/packages/huseyinfiliz/leaderboard) [![Total Downloads](https://img.shields.io/packagist/dt/huseyinfiliz/leaderboard.svg)](https://packagist.org/packages/huseyinfiliz/leaderboard)
 
@@ -8,15 +8,31 @@ A points-based leaderboard extension for [Flarum](https://flarum.org) forums. Aw
 
 ### 🏆 Podium & Rankings
 
-![Podium Demo](https://placeholder.img/leaderboard-podium.png)
+![Podium Demo](https://cdn.discuss.flarum.org/2026-03-02/1772440801-974877-image.png)
 
 ### 📊 Top Contenders & Honorable Mentions
 
-![Contenders Demo](https://placeholder.img/leaderboard-contenders.png)
+![Contenders Demo](https://cdn.discuss.flarum.org/2026-03-02/1772440801-974877-image.png)
 
-### ⚙️ Admin Panel
+### ⚙️ Admin General Settings
 
-![Admin Demo](https://placeholder.img/leaderboard-admin.png)
+![Admin Demo](https://cdn.discuss.flarum.org/2026-03-02/1772440929-15437-image.png)
+
+### ⚙️ Admin Points Settings
+
+![Admin Demo](https://cdn.discuss.flarum.org/2026-03-02/1772440897-471749-image.png)
+
+### ⚙️ Admin Exclusions Settings
+
+![Admin Demo](https://cdn.discuss.flarum.org/2026-03-02/1772441000-569493-image.png)
+
+### ⚙️ Admin Maintenance Settings
+
+![Admin Demo](https://cdn.discuss.flarum.org/2026-03-02/1772441087-9972-image.png)
+
+### ⚙️ Admin Recalculate Modal
+
+![Admin Demo](https://cdn.discuss.flarum.org/2026-03-02/1772441074-989918-image.png)
 
 ## Features
 
@@ -161,18 +177,21 @@ Rankings are filtered by the `created_at` timestamp of each point record:
 
 This extension comes with English translations. Community translations are welcome!
 
+Translate: [Leaderboard at Weblate](https://weblate.rob006.net/projects/flarum/huseyinfiliz-leaderboard/)
+
 ## 💖 Support & Contributing
 
 If you find this extension useful, consider:
 
 - ⭐ Starring the repository on GitHub
-- 🐛 Reporting issues on [GitHub](https://github.com/huseyinfiliz/leaderboard/issues)
 - 🌐 Contributing translations
 
 ## Links
 
+- [Discuss](https://discuss.flarum.org/d/38834-leaderboard-points-based-ranking-system)
 - [Packagist](https://packagist.org/packages/huseyinfiliz/leaderboard)
 - [GitHub](https://github.com/huseyinfiliz/leaderboard)
+- [Issues](https://github.com/huseyinfiliz/leaderboard/issues)
 
 ## License
 
