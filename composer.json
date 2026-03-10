@@ -109,7 +109,6 @@
         "flarum/tags": "*",
         "fof/reactions": "*",
         "fof/best-answer": "*",
-        "fof/badges": "*",
         "fof/gamification": "*"
     }
 }
