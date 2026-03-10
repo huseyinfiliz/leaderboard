@@ -11,7 +11,7 @@ use Tobyz\JsonApiServer\Context as OriginalContext;
 /**
  * @extends Resource\AbstractResource<object>
  */
-class LeaderboardEntryLeanResource extends Resource\AbstractResource implements 
+class LeaderboardEntryLeanResource extends Resource\AbstractResource 
 {
     public function type(): string
     {
