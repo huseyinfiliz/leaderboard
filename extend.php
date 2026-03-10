@@ -18,6 +18,10 @@ use Flarum\Extend;
 use Flarum\Post\Event as PostEvent;
 use Flarum\User\Event as UserEvent;
 use Flarum\User\User;
+use Flarum\Api\Context;
+use Flarum\Api\Endpoint;
+use Flarum\Api\Resource;
+use Flarum\Api\Schema;
 
 return [
     (new Extend\ServiceProvider())
@@ -41,6 +45,7 @@ return [
     (new Extend\Model(User::class))
         ->hasOne('leaderboardTotal', Model\LeaderboardUserTotal::class, 'user_id'),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiSerializer(BasicUserSerializer::class))
         ->attribute('leaderboardPoints', function ($serializer, $user) {
             $total = $user->leaderboardTotal;
@@ -48,22 +53,27 @@ return [
             return $total ? $total->points_total : 0;
         }),
 
-    // [C2] Eager-load leaderboardTotal to prevent N+1 queries when serializing users
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(FlarumController\ListDiscussionsController::class))
         ->addInclude(['user.leaderboardTotal', 'lastPostedUser.leaderboardTotal', 'mostRelevantPost.user.leaderboardTotal']),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(FlarumController\ShowDiscussionController::class))
         ->addInclude(['posts.user.leaderboardTotal']),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(FlarumController\ListPostsController::class))
         ->addInclude(['user.leaderboardTotal']),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(FlarumController\ShowPostController::class))
         ->addInclude(['user.leaderboardTotal']),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(FlarumController\ShowUserController::class))
         ->addInclude(['leaderboardTotal']),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(FlarumController\ListUsersController::class))
         ->addInclude(['leaderboardTotal']),
 
@@ -118,4 +128,6 @@ return [
             (new Extend\Event())
                 ->listen(\FoF\Gamification\Events\PostWasVoted::class, Listener\PostVotedListener::class),
         ]),
+    new Extend\ApiResource(Api\Resource\LeaderboardEntryLeanResource::class),
+    new Extend\ApiResource(Api\Resource\LeaderboardEntryResource::class),
 ];
