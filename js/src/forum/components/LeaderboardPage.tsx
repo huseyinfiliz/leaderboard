@@ -1,3 +1,4 @@
+import IndexSidebar from 'flarum/forum/components/IndexSidebar';
 import app from 'flarum/forum/app';
 import Page from 'flarum/common/components/Page';
 import type { IPageAttrs } from 'flarum/common/components/Page';
@@ -38,7 +39,7 @@ export default class LeaderboardPage extends Page<IPageAttrs, LeaderboardState> 
         <div className="container">
           <div className="sideNavContainer">
             <nav className="IndexPage-nav sideNav">
-              <ul>{listItems(IndexPage.prototype.sidebarItems().toArray())}</ul>
+              <ul>{listItems(IndexSidebar.prototype.items().toArray())}</ul>
             </nav>
             <div className="IndexPage-results sideNavOffset">
               <div className="LeaderboardPage-filters">

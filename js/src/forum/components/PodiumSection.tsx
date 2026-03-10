@@ -1,7 +1,7 @@
 import app from 'flarum/forum/app';
 import Component from 'flarum/common/Component';
 import Link from 'flarum/common/components/Link';
-import avatar from 'flarum/common/helpers/avatar';
+import Avatar from 'flarum/common/components/Avatar';
 import type Mithril from 'mithril';
 
 import type LeaderboardEntry from '../../common/models/LeaderboardEntry';
@@ -41,7 +41,7 @@ export default class PodiumSection extends Component<PodiumAttrs> {
                 {rank === 1 && <i className="fas fa-crown LeaderboardPodium-crown" />}
                 <span className="LeaderboardPodium-rankNumber">#{rank}</span>
               </div>
-              <div className="LeaderboardPodium-avatar">{user ? avatar(user) : <span className="Avatar">?</span>}</div>
+              <div className="LeaderboardPodium-avatar">{user ? <Avatar user={user} /> : <span className="Avatar">?</span>}</div>
               <div className="LeaderboardPodium-name">{user ? user.displayName() : '?'}</div>
               <div className="LeaderboardPodium-points">
                 {entry.points()} {pointsLabel}

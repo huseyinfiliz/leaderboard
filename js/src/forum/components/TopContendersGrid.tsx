@@ -1,7 +1,7 @@
 import app from 'flarum/forum/app';
 import Component from 'flarum/common/Component';
 import Link from 'flarum/common/components/Link';
-import avatar from 'flarum/common/helpers/avatar';
+import Avatar from 'flarum/common/components/Avatar';
 import type Mithril from 'mithril';
 
 import type LeaderboardEntry from '../../common/models/LeaderboardEntry';
@@ -34,7 +34,7 @@ export default class TopContendersGrid extends Component<ContendersAttrs> {
             return (
               <Link href={user ? app.route('user', { username: user.slug() }) : '#'} className="LeaderboardContenders-card" key={entry.id()}>
                 <span className="LeaderboardContenders-rank">#{rank}</span>
-                <div className="LeaderboardContenders-avatar">{user ? avatar(user) : <span className="Avatar">?</span>}</div>
+                <div className="LeaderboardContenders-avatar">{user ? <Avatar user={user} /> : <span className="Avatar">?</span>}</div>
                 <span className="LeaderboardContenders-name">{user ? user.displayName() : '?'}</span>
                 <span className="LeaderboardContenders-points">
                   {entry.points()} {pointsLabel}

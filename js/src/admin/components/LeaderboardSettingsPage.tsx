@@ -1,3 +1,4 @@
+import Form from 'flarum/common/components/Form';
 import app from 'flarum/admin/app';
 import ExtensionPage from 'flarum/admin/components/ExtensionPage';
 import Button from 'flarum/common/components/Button';
@@ -152,7 +153,7 @@ export default class LeaderboardSettingsPage extends ExtensionPage {
 
   generalTab(): Mithril.Children {
     return (
-      <div className="Form">
+      <Form>
         <div className="Form-group">
           <label>{app.translator.trans('huseyinfiliz-leaderboard.admin.settings.leaderboard_name_label')}</label>
           <input className="FormControl" bidi={this.setting('huseyinfiliz-leaderboard.leaderboard_name')} placeholder="Leaderboard" />
@@ -162,7 +163,7 @@ export default class LeaderboardSettingsPage extends ExtensionPage {
           <input className="FormControl" bidi={this.setting('huseyinfiliz-leaderboard.points_label')} placeholder="Points" />
         </div>
         <div className="Form-group">{this.submitButton()}</div>
-      </div>
+      </Form>
     );
   }
 
@@ -176,7 +177,7 @@ export default class LeaderboardSettingsPage extends ExtensionPage {
 
   pointsTab(): Mithril.Children {
     return (
-      <div className="Form">
+      <Form>
         {this.buildAccordionSection('core', 'fas fa-cube', app.translator.trans('huseyinfiliz-leaderboard.admin.settings.section_core'), null, [
           this.buildPointInput('discussion_started'),
           this.buildPointInput('post_created'),
@@ -227,7 +228,7 @@ export default class LeaderboardSettingsPage extends ExtensionPage {
           ]
         )}
         <div className="Form-group">{this.submitButton()}</div>
-      </div>
+      </Form>
     );
   }
 
@@ -281,7 +282,7 @@ export default class LeaderboardSettingsPage extends ExtensionPage {
     const selectedGroups = groups.filter((g) => this.selectedGroupIds.includes(Number(g.id())));
 
     return (
-      <div className="Form">
+      <Form>
         <div className="Form-group">
           <label>{app.translator.trans('huseyinfiliz-leaderboard.admin.settings.excluded_groups_label')}</label>
           <p className="helpText">{app.translator.trans('huseyinfiliz-leaderboard.admin.settings.excluded_groups_help')}</p>
@@ -302,6 +303,7 @@ export default class LeaderboardSettingsPage extends ExtensionPage {
             onclick={() => {
               app.modal.show(SelectGroupsModal, {
                 selectedGroupIds: this.selectedGroupIds,
+
                 onsubmit: (ids: number[]) => {
                   this.selectedGroupIds = ids;
                   this.setting('huseyinfiliz-leaderboard.excluded_groups')(JSON.stringify(ids));
@@ -312,11 +314,9 @@ export default class LeaderboardSettingsPage extends ExtensionPage {
             {app.translator.trans('huseyinfiliz-leaderboard.admin.modals.select_groups')}
           </Button>
         </div>
-
         {this.isExtensionEnabled('flarum-tags') && this.tagsExclusionSection()}
-
         <div className="Form-group">{this.submitButton()}</div>
-      </div>
+      </Form>
     );
   }
 
@@ -363,25 +363,22 @@ export default class LeaderboardSettingsPage extends ExtensionPage {
 
   maintenanceTab(): Mithril.Children {
     return (
-      <div className="Form">
+      <Form>
         <div className="Form-group">
           <h3>{app.translator.trans('huseyinfiliz-leaderboard.admin.settings.recalculate_points_title')}</h3>
           <p className="helpText">{app.translator.trans('huseyinfiliz-leaderboard.admin.settings.recalculate_points_help')}</p>
-
           <Button className="Button Button--danger" onclick={() => this.openRecalculateModal()}>
             {app.translator.trans('huseyinfiliz-leaderboard.admin.settings.recalculate_points_button')}
           </Button>
         </div>
-
         <div className="Form-group">
           <h3>{app.translator.trans('huseyinfiliz-leaderboard.admin.settings.recalculate_totals_title')}</h3>
           <p className="helpText">{app.translator.trans('huseyinfiliz-leaderboard.admin.settings.recalculate_totals_help')}</p>
-
           <Button className="Button" loading={this.rebuilding} onclick={() => this.rebuildTotals()}>
             {app.translator.trans('huseyinfiliz-leaderboard.admin.settings.recalculate_totals_button')}
           </Button>
         </div>
-      </div>
+      </Form>
     );
   }
 

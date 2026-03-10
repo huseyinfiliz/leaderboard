@@ -1,17 +1,17 @@
 import app from 'flarum/admin/app';
-import Modal from 'flarum/common/components/Modal';
-import type { IInternalModalAttrs } from 'flarum/common/components/Modal';
+import FormModal from 'flarum/common/components/FormModal';
+import { IFormModalAttrs } from 'flarum/common/components/FormModal';
 import Button from 'flarum/common/components/Button';
 import GroupBadge from 'flarum/common/components/GroupBadge';
 import type Group from 'flarum/common/models/Group';
 import type Mithril from 'mithril';
 
-interface SelectGroupsModalAttrs extends IInternalModalAttrs {
+interface SelectGroupsModalAttrs extends IFormModalAttrs {
   selectedGroupIds: number[];
   onsubmit: (ids: number[]) => void;
 }
 
-export default class SelectGroupsModal<CustomAttrs extends SelectGroupsModalAttrs = SelectGroupsModalAttrs> extends Modal<CustomAttrs> {
+export default class SelectGroupsModal<CustomAttrs extends SelectGroupsModalAttrs = SelectGroupsModalAttrs> extends FormModal<CustomAttrs> {
   private selected!: Set<string>;
 
   oninit(vnode: Mithril.Vnode<CustomAttrs>) {

@@ -1,3 +1,4 @@
+import IndexSidebar from 'flarum/forum/components/IndexSidebar';
 import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
 import IndexPage from 'flarum/forum/components/IndexPage';
@@ -15,7 +16,7 @@ app.initializers.add('huseyinfiliz/leaderboard', () => {
   };
 
   // Add sidebar nav link
-  extend(IndexPage.prototype, 'navItems', function (items) {
+  extend(IndexSidebar.prototype, 'navItems', function (items) {
     const leaderboardName = app.forum.attribute('huseyinfiliz-leaderboard.leaderboard_name') || 'Leaderboard';
 
     items.add(
