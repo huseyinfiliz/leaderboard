@@ -13,10 +13,11 @@ namespace HuseyinFiliz\Leaderboard\Tests\Unit;
 
 use HuseyinFiliz\Leaderboard\Model\LeaderboardPoint;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class LeaderboardPointModelTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function test_table_name_is_correct(): void
     {
         $model = new LeaderboardPoint();
@@ -24,7 +25,7 @@ class LeaderboardPointModelTest extends TestCase
         $this->assertEquals('leaderboard_points', $model->getTable());
     }
 
-    /** @test */
+    #[Test]
     public function test_timestamps_use_created_at_only(): void
     {
         $model = new LeaderboardPoint();
@@ -34,7 +35,7 @@ class LeaderboardPointModelTest extends TestCase
         $this->assertNull($model::UPDATED_AT);
     }
 
-    /** @test */
+    #[Test]
     public function test_fillable_fields_are_set(): void
     {
         $model = new LeaderboardPoint();

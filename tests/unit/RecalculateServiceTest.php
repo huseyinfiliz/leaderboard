@@ -17,6 +17,7 @@ use HuseyinFiliz\Leaderboard\Service\RecalculateService;
 use Illuminate\Database\ConnectionInterface;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class RecalculateServiceTest extends TestCase
 {
@@ -45,7 +46,7 @@ class RecalculateServiceTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function test_execute_sync_step_returns_correct_metadata(): void
     {
         $service = new RecalculateService($this->pointService, $this->db, $this->extensions);
@@ -62,7 +63,7 @@ class RecalculateServiceTest extends TestCase
         $this->assertFalse($result['done']);
     }
 
-    /** @test */
+    #[Test]
     public function test_execute_sync_step_last_step_is_done(): void
     {
         $service = new RecalculateService($this->pointService, $this->db, $this->extensions);
@@ -85,7 +86,7 @@ class RecalculateServiceTest extends TestCase
         $this->assertTrue($result['done']);
     }
 
-    /** @test */
+    #[Test]
     public function test_execute_sync_step_beyond_total_returns_done(): void
     {
         $service = new RecalculateService($this->pointService, $this->db, $this->extensions);
@@ -96,7 +97,7 @@ class RecalculateServiceTest extends TestCase
         $this->assertSame('done', $result['stepKey']);
     }
 
-    /** @test */
+    #[Test]
     public function test_disabled_extension_purges_reason(): void
     {
         $this->extensions->shouldReceive('isEnabled')->with('flarum-likes')->andReturn(false);
@@ -113,7 +114,7 @@ class RecalculateServiceTest extends TestCase
         $this->assertFalse($result['done']);
     }
 
-    /** @test */
+    #[Test]
     public function test_enabled_extension_syncs_events(): void
     {
         $this->extensions->shouldReceive('isEnabled')->with('flarum-likes')->andReturn(true);
@@ -129,7 +130,7 @@ class RecalculateServiceTest extends TestCase
         $this->assertSame('like_received', $result['stepKey']);
     }
 
-    /** @test */
+    #[Test]
     public function test_rebuild_totals_uses_points_case_sql(): void
     {
         $this->pointService->shouldReceive('buildPointsCaseSql')->once()->andReturn([
@@ -153,7 +154,7 @@ class RecalculateServiceTest extends TestCase
         $service->rebuildTotals();
     }
 
-    /** @test */
+    #[Test]
     public function test_group_exclusion_sql_is_included_when_groups_excluded(): void
     {
         $this->pointService->shouldReceive('getExcludedGroupIds')->andReturn([3, 4]);

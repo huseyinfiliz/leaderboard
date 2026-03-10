@@ -13,6 +13,8 @@ namespace HuseyinFiliz\Leaderboard\Tests\Integration\Api;
 
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Flarum\User\User;
 
 class ListLeaderboardTest extends TestCase
 {
@@ -25,7 +27,7 @@ class ListLeaderboardTest extends TestCase
         $this->extension('huseyinfiliz-leaderboard');
 
         $this->prepareDatabase([
-            'users' => [
+            User::class => [
                 $this->normalUser(),
                 ['id' => 3, 'username' => 'user3', 'email' => 'user3@example.com', 'is_email_confirmed' => true],
                 ['id' => 4, 'username' => 'user4', 'email' => 'user4@example.com', 'is_email_confirmed' => true],
@@ -43,7 +45,7 @@ class ListLeaderboardTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_view_leaderboard(): void
     {
         $response = $this->send(
@@ -58,7 +60,7 @@ class ListLeaderboardTest extends TestCase
         $this->assertCount(3, $body['data']);
     }
 
-    /** @test */
+    #[Test]
     public function leaderboard_is_sorted_by_points_descending(): void
     {
         $response = $this->send(
@@ -78,7 +80,7 @@ class ListLeaderboardTest extends TestCase
         $this->assertEquals(25, $body['data'][2]['attributes']['points']);
     }
 
-    /** @test */
+    #[Test]
     public function leaderboard_includes_rank(): void
     {
         $response = $this->send(
@@ -92,7 +94,7 @@ class ListLeaderboardTest extends TestCase
         $this->assertEquals(3, $body['data'][2]['attributes']['rank']);
     }
 
-    /** @test */
+    #[Test]
     public function leaderboard_respects_pagination(): void
     {
         $response = $this->send(
@@ -109,7 +111,7 @@ class ListLeaderboardTest extends TestCase
         $this->assertArrayHasKey('next', $body['links']);
     }
 
-    /** @test */
+    #[Test]
     public function leaderboard_supports_period_filtering(): void
     {
         $response = $this->send(
@@ -125,7 +127,7 @@ class ListLeaderboardTest extends TestCase
         $this->assertArrayHasKey('data', $body);
     }
 
-    /** @test */
+    #[Test]
     public function leaderboard_entries_include_user_relationship(): void
     {
         $response = $this->send(
@@ -149,7 +151,7 @@ class ListLeaderboardTest extends TestCase
         $this->assertNotEmpty($body['included']);
     }
 
-    /** @test */
+    #[Test]
     public function page_limit_cannot_exceed_50(): void
     {
         $response = $this->send(

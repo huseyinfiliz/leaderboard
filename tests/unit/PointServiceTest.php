@@ -16,6 +16,7 @@ use Flarum\Settings\SettingsRepositoryInterface;
 use HuseyinFiliz\Leaderboard\Service\PointService;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PointServiceTest extends TestCase
 {
@@ -38,7 +39,7 @@ class PointServiceTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function test_get_points_for_reason_returns_setting_value(): void
     {
         $this->settings->shouldReceive('get')
@@ -53,7 +54,7 @@ class PointServiceTest extends TestCase
         $this->assertEquals(5, $service->getPointsForReason('discussion_started'));
     }
 
-    /** @test */
+    #[Test]
     public function test_get_points_for_reason_returns_default_when_not_set(): void
     {
         $this->settings->shouldReceive('get')
@@ -68,7 +69,7 @@ class PointServiceTest extends TestCase
         $this->assertEquals(0, $service->getPointsForReason('discussion_started'));
     }
 
-    /** @test */
+    #[Test]
     public function test_get_points_for_unknown_reason_returns_zero(): void
     {
         $this->settings->shouldReceive('get')
@@ -83,7 +84,7 @@ class PointServiceTest extends TestCase
         $this->assertEquals(0, $service->getPointsForReason('unknown_reason'));
     }
 
-    /** @test */
+    #[Test]
     public function test_get_points_for_downvote_default_is_negative(): void
     {
         $this->settings->shouldReceive('get')
@@ -98,7 +99,7 @@ class PointServiceTest extends TestCase
         $this->assertEquals(-1, $service->getPointsForReason('downvote_received'));
     }
 
-    /** @test */
+    #[Test]
     public function test_is_excluded_by_tags_returns_false_when_tags_extension_disabled(): void
     {
         $this->extensions->shouldReceive('isEnabled')
@@ -115,7 +116,7 @@ class PointServiceTest extends TestCase
         $this->assertFalse($service->isExcludedByTags($discussion));
     }
 
-    /** @test */
+    #[Test]
     public function test_is_excluded_by_tags_returns_false_when_no_excluded_tags(): void
     {
         $this->extensions->shouldReceive('isEnabled')
@@ -136,7 +137,7 @@ class PointServiceTest extends TestCase
         $this->assertFalse($service->isExcludedByTags($discussion));
     }
 
-    /** @test */
+    #[Test]
     public function test_is_excluded_by_group_returns_false_when_no_excluded_groups(): void
     {
         $this->settings->shouldReceive('get')

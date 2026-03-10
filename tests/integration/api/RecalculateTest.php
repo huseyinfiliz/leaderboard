@@ -13,6 +13,8 @@ namespace HuseyinFiliz\Leaderboard\Tests\Integration\Api;
 
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Flarum\User\User;
 
 class RecalculateTest extends TestCase
 {
@@ -25,13 +27,13 @@ class RecalculateTest extends TestCase
         $this->extension('huseyinfiliz-leaderboard');
 
         $this->prepareDatabase([
-            'users' => [
+            User::class => [
                 $this->normalUser(),
             ],
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function guest_cannot_recalculate(): void
     {
         $response = $this->send(
@@ -41,7 +43,7 @@ class RecalculateTest extends TestCase
         $this->assertContains($response->getStatusCode(), [400, 401]);
     }
 
-    /** @test */
+    #[Test]
     public function normal_user_cannot_recalculate(): void
     {
         $response = $this->send(
@@ -53,7 +55,7 @@ class RecalculateTest extends TestCase
         $this->assertEquals(403, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_sync_events(): void
     {
         $request = $this->request('POST', '/api/leaderboard-entries/recalculate', [
@@ -77,7 +79,7 @@ class RecalculateTest extends TestCase
         $this->assertFalse($body['done']);
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_rebuild_totals(): void
     {
         $request = $this->request('POST', '/api/leaderboard-entries/recalculate', [
