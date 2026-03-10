@@ -14,11 +14,6 @@ use Illuminate\Database\ConnectionInterface;
 
 class PointService
 {
-    protected SettingsRepositoryInterface $settings;
-    protected Cache $cache;
-    protected ConnectionInterface $db;
-    protected ExtensionManager $extensions;
-
     protected array $defaults = [
         'discussion_started' => 1,
         'post_created' => 1,
@@ -33,16 +28,8 @@ class PointService
         'downvote_received' => -1,
     ];
 
-    public function __construct(
-        SettingsRepositoryInterface $settings,
-        Cache $cache,
-        ConnectionInterface $db,
-        ExtensionManager $extensions
-    ) {
-        $this->settings = $settings;
-        $this->cache = $cache;
-        $this->db = $db;
-        $this->extensions = $extensions;
+    public function __construct(protected SettingsRepositoryInterface $settings, protected Cache $cache, protected ConnectionInterface $db, protected ExtensionManager $extensions)
+    {
     }
 
     public function award(User $user, int $points, string $reason, ?int $subjectId = null, ?string $subjectType = null, ?int $actorId = null): void

@@ -10,11 +10,8 @@ use Illuminate\Contracts\Events\Dispatcher;
 
 class ContentHiddenListener
 {
-    protected PointService $pointService;
-
-    public function __construct(PointService $pointService)
+    public function __construct(protected PointService $pointService)
     {
-        $this->pointService = $pointService;
     }
 
     public function subscribe(Dispatcher $events): void

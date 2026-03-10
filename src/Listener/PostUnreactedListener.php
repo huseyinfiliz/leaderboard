@@ -7,11 +7,8 @@ use HuseyinFiliz\Leaderboard\Service\PointService;
 
 class PostUnreactedListener
 {
-    protected PointService $pointService;
-
-    public function __construct(PointService $pointService)
+    public function __construct(protected PointService $pointService)
     {
-        $this->pointService = $pointService;
     }
 
     public function handle(PostWasUnreacted $event): void

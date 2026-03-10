@@ -27,15 +27,8 @@ class ListLeaderboardController extends AbstractListController
 
     public $maxLimit = 50;
 
-    protected SettingsRepositoryInterface $settings;
-    protected UrlGenerator $url;
-    protected PointService $pointService;
-
-    public function __construct(SettingsRepositoryInterface $settings, UrlGenerator $url, PointService $pointService)
+    public function __construct(protected SettingsRepositoryInterface $settings, protected UrlGenerator $url, protected PointService $pointService)
     {
-        $this->settings = $settings;
-        $this->url = $url;
-        $this->pointService = $pointService;
     }
 
     protected function data(ServerRequestInterface $request, Document $document)

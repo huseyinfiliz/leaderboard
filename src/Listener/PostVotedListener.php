@@ -7,11 +7,8 @@ use HuseyinFiliz\Leaderboard\Service\PointService;
 
 class PostVotedListener
 {
-    protected PointService $pointService;
-
-    public function __construct(PointService $pointService)
+    public function __construct(protected PointService $pointService)
     {
-        $this->pointService = $pointService;
     }
 
     public function handle(PostWasVoted $event): void

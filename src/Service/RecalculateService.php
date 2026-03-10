@@ -7,9 +7,6 @@ use Illuminate\Database\ConnectionInterface;
 
 class RecalculateService
 {
-    protected PointService $pointService;
-    protected ConnectionInterface $db;
-    protected ExtensionManager $extensions;
     protected string $prefix;
 
     private const SYNC_STEPS = [
@@ -26,13 +23,10 @@ class RecalculateService
     ];
 
     public function __construct(
-        PointService $pointService,
-        ConnectionInterface $db,
-        ExtensionManager $extensions
+        protected PointService $pointService,
+        protected ConnectionInterface $db,
+        protected ExtensionManager $extensions
     ) {
-        $this->pointService = $pointService;
-        $this->db = $db;
-        $this->extensions = $extensions;
         $this->prefix = $db->getTablePrefix();
     }
 

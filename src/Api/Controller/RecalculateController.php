@@ -12,15 +12,10 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class RecalculateController implements RequestHandlerInterface
 {
-    protected RecalculateService $recalculateService;
-    protected Cache $cache;
-
     private const LOCK_KEY = 'leaderboard_recalculating';
 
-    public function __construct(RecalculateService $recalculateService, Cache $cache)
+    public function __construct(protected RecalculateService $recalculateService, protected Cache $cache)
     {
-        $this->recalculateService = $recalculateService;
-        $this->cache = $cache;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
