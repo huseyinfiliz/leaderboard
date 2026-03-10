@@ -3,41 +3,33 @@
 namespace HuseyinFiliz\Leaderboard\Api\Controller;
 
 use Carbon\Carbon;
-use Flarum\Api\Controller\AbstractListController;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use HuseyinFiliz\Leaderboard\Api\Data\LeaderboardEntryData;
-use HuseyinFiliz\Leaderboard\Api\Serializer\LeaderboardEntryLeanSerializer;
-use HuseyinFiliz\Leaderboard\Api\Serializer\LeaderboardEntrySerializer;
 use HuseyinFiliz\Leaderboard\Model\LeaderboardPoint;
 use HuseyinFiliz\Leaderboard\Model\LeaderboardUserTotal;
 use HuseyinFiliz\Leaderboard\Service\PointService;
 use Illuminate\Support\Arr;
+use Laminas\Diactoros\Response\JsonResponse;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tobscure\JsonApi\Document;
+use Psr\Http\Server\RequestHandlerInterface;
 
-/**
- * @TODO: Remove this in favor of one of the API resource classes that were added.
- *      Or extend an existing API Resource to add this to.
- *      Or use a vanilla RequestHandlerInterface controller.
- *      @link https://docs.flarum.org/2.x/extend/api#endpoints
- */
-class ListLeaderboardController extends AbstractListController
+class ListLeaderboardController implements RequestHandlerInterface
 {
-    public $serializer = LeaderboardEntrySerializer::class;
+    protected int $limit = 20;
 
-    public $include = ['user'];
+    protected int $maxLimit = 50;
 
-    public $limit = 20;
-
-    public $maxLimit = 50;
-
-    public function __construct(protected SettingsRepositoryInterface $settings, protected UrlGenerator $url, protected PointService $pointService)
-    {
+    public function __construct(
+        protected SettingsRepositoryInterface $settings,
+        protected UrlGenerator $url,
+        protected PointService $pointService
+    ) {
     }
 
-    protected function data(ServerRequestInterface $request, Document $document)
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
         $filter = Arr::get($params, 'filter', []);
@@ -55,20 +47,17 @@ class ListLeaderboardController extends AbstractListController
             case 'contenders':
                 $offset = 3;
                 $limit = 7;
-                $this->serializer = LeaderboardEntryLeanSerializer::class;
                 break;
 
             case 'honorable':
-                $sectionOffset = $this->extractOffset($request);
+                $sectionOffset = $this->extractOffset($params);
                 $offset = 10 + $sectionOffset;
-                $limit = $this->extractLimit($request);
-                $this->serializer = LeaderboardEntryLeanSerializer::class;
+                $limit = $this->extractLimit($params);
                 break;
 
             default:
-                // Legacy: no section filter — return all entries like before
-                $offset = $this->extractOffset($request);
-                $limit = $this->extractLimit($request);
+                $offset = $this->extractOffset($params);
+                $limit = $this->extractLimit($params);
                 break;
         }
 
@@ -79,33 +68,125 @@ class ListLeaderboardController extends AbstractListController
             $results = $this->getPeriodResults($periodStart, $offset, $limit, $excludedGroupIds);
         }
 
-        if ($section === 'honorable') {
-            // Pagination relative to the honorable section (offset 0, 20, 40...)
-            $sectionOffset = $this->extractOffset($request);
-            $hasMore = $results['total'] > $offset + count($results['entries']);
+        $entries = $results['entries'];
+        $total = $results['total'];
 
-            $document->addPaginationLinks(
-                $this->url->to('api')->route('huseyinfiliz-leaderboard.api.index'),
-                $request->getQueryParams(),
-                $sectionOffset,
-                $limit,
-                $hasMore ? null : 0
-            );
-        } elseif ($section === '') {
-            // Legacy pagination
-            $hasMore = $results['total'] > $offset + count($results['entries']);
+        // Build JSON:API response
+        $data = [];
+        $included = [];
+        $seenUsers = [];
 
-            $document->addPaginationLinks(
-                $this->url->to('api')->route('huseyinfiliz-leaderboard.api.index'),
-                $request->getQueryParams(),
-                $offset,
-                $limit,
-                $hasMore ? null : 0
-            );
+        foreach ($entries as $entry) {
+            $entryData = [
+                'type' => 'leaderboard-entries',
+                'id' => (string) $entry->id,
+                'attributes' => [
+                    'points' => $entry->points,
+                    'rank' => $entry->rank,
+                ],
+            ];
+
+            if ($entry->user) {
+                $entryData['relationships'] = [
+                    'user' => [
+                        'data' => ['type' => 'users', 'id' => (string) $entry->user->id],
+                    ],
+                ];
+
+                if (!isset($seenUsers[$entry->user->id])) {
+                    $included[] = $this->serializeUser($entry->user);
+                    $seenUsers[$entry->user->id] = true;
+                }
+            }
+
+            $data[] = $entryData;
         }
-        // podium and contenders: no pagination needed
 
-        return $results['entries'];
+        $response = ['data' => $data];
+
+        if (!empty($included)) {
+            $response['included'] = $included;
+        }
+
+        // Pagination links
+        if ($section === 'honorable') {
+            $sectionOffset = $this->extractOffset($params);
+            $hasMore = $total > $offset + count($entries);
+            $response['links'] = $this->buildPaginationLinks($request, $sectionOffset, $limit, $hasMore);
+        } elseif ($section === '') {
+            $hasMore = $total > $offset + count($entries);
+            $response['links'] = $this->buildPaginationLinks($request, $offset, $limit, $hasMore);
+        }
+
+        return new JsonResponse($response);
+    }
+
+    protected function serializeUser(User $user): array
+    {
+        $attributes = [
+            'username' => $user->username,
+            'displayName' => $user->display_name,
+            'slug' => $user->username,
+        ];
+
+        if ($user->avatar_url) {
+            $attributes['avatarUrl'] = $user->avatar_url;
+        }
+
+        if ($user->comment_count !== null) {
+            $attributes['commentCount'] = (int) $user->comment_count;
+        }
+
+        if ($user->discussion_count !== null) {
+            $attributes['discussionCount'] = (int) $user->discussion_count;
+        }
+
+        return [
+            'type' => 'users',
+            'id' => (string) $user->id,
+            'attributes' => $attributes,
+        ];
+    }
+
+    protected function buildPaginationLinks(ServerRequestInterface $request, int $offset, int $limit, bool $hasMore): array
+    {
+        $links = [];
+        $baseUrl = $this->url->to('api')->route('huseyinfiliz-leaderboard.api.index');
+        $queryParams = $request->getQueryParams();
+
+        if ($offset > 0) {
+            $firstParams = $queryParams;
+            $firstParams['page'] = ['offset' => 0];
+            $links['first'] = $baseUrl . '?' . http_build_query($firstParams, '', '&', PHP_QUERY_RFC3986);
+
+            $prevOffset = max(0, $offset - $limit);
+            $prevParams = $queryParams;
+            $prevParams['page'] = ['offset' => $prevOffset];
+            $links['prev'] = $baseUrl . '?' . http_build_query($prevParams, '', '&', PHP_QUERY_RFC3986);
+        }
+
+        if ($hasMore) {
+            $nextParams = $queryParams;
+            $nextParams['page'] = ['offset' => $offset + $limit];
+            $links['next'] = $baseUrl . '?' . http_build_query($nextParams, '', '&', PHP_QUERY_RFC3986);
+        }
+
+        return $links;
+    }
+
+    protected function extractOffset(array $params): int
+    {
+        $page = Arr::get($params, 'page', []);
+
+        return max(0, (int) Arr::get($page, 'offset', 0));
+    }
+
+    protected function extractLimit(array $params): int
+    {
+        $page = Arr::get($params, 'page', []);
+        $limit = (int) Arr::get($page, 'limit', $this->limit);
+
+        return max(1, min($limit, $this->maxLimit));
     }
 
     protected function getAllTimeResults(int $offset, int $limit, array $excludedGroupIds): array
