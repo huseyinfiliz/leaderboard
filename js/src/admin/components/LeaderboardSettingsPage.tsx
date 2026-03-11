@@ -321,9 +321,9 @@ export default class LeaderboardSettingsPage extends ExtensionPage {
   }
 
   tagsExclusionSection(): Mithril.Children {
-    const { default: tagLabel } = require('ext:flarum/tags/common/helpers/tagLabel') as any;
-    const { default: sortTags } = require('ext:flarum/tags/common/utils/sortTags') as any;
-    const { default: TagSelectionModal } = require('ext:flarum/tags/common/components/TagSelectionModal') as any;
+    const tagLabel = require('ext:flarum/tags/common/helpers/tagLabel');
+    const sortTags = require('ext:flarum/tags/common/utils/sortTags');
+    const TagSelectionModal = require('ext:flarum/tags/common/components/TagSelectionModal');
 
     const allTags = sortTags(app.store.all('tags'));
     const selectedTags = allTags.filter((t: any) => this.selectedTagIds.includes(Number(t.id())));
