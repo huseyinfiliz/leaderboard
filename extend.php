@@ -45,7 +45,7 @@ return [
     (new Extend\ApiResource(Resource\UserResource::class))
         ->fields(fn () => [
             Schema\Integer::make('leaderboardPoints')
-                ->get(fn ($user) => $user->leaderboardTotal->points_total ?? 0),
+                ->get(fn ($user) => $user->leaderboardTotal?->points_total ?? 0),
         ])
         ->endpoint(Endpoint\Show::class, function (Endpoint\Show $endpoint) {
             return $endpoint->eagerLoad(['leaderboardTotal']);
