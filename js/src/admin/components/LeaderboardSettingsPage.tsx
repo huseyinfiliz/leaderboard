@@ -321,9 +321,8 @@ export default class LeaderboardSettingsPage extends ExtensionPage {
   }
 
   tagsExclusionSection(): Mithril.Children {
-    const tagLabel = require('flarum/tags/helpers/tagLabel') as any;
-    const sortTags = require('flarum/tags/utils/sortTags') as any;
-    const TagSelectionModal = require('flarum/tags/components/TagSelectionModal') as any;
+    const tagLabel = require('ext:flarum/tags/common/helpers/tagLabel');
+    const sortTags = require('ext:flarum/tags/common/utils/sortTags');
 
     const allTags = sortTags(app.store.all('tags'));
     const selectedTags = allTags.filter((t: any) => this.selectedTagIds.includes(Number(t.id())));
@@ -345,7 +344,7 @@ export default class LeaderboardSettingsPage extends ExtensionPage {
           onclick={() => {
             const currentSelected = allTags.filter((t: any) => this.selectedTagIds.includes(Number(t.id())));
 
-            app.modal.show(TagSelectionModal, {
+            app.modal.show(() => import('ext:flarum/tags/common/components/TagSelectionModal'), {
               selectedTags: currentSelected,
               onsubmit: (tags: any[]) => {
                 this.selectedTagIds = tags.map((t: any) => Number(t.id()));

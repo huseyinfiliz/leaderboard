@@ -150,13 +150,13 @@ class RecalculateService
         $p = $this->prefix;
 
         $this->db->delete(
-            "DELETE lp FROM {$p}leaderboard_points lp
-             WHERE lp.reason = 'discussion_started'
+            "DELETE FROM {$p}leaderboard_points
+             WHERE reason = 'discussion_started'
                AND NOT EXISTS (
                    SELECT 1 FROM {$p}discussions d
                    JOIN {$p}users u ON u.id = d.user_id
-                   WHERE d.id = lp.subject_id
-                     AND d.user_id = lp.user_id
+                   WHERE d.id = {$p}leaderboard_points.subject_id
+                     AND d.user_id = {$p}leaderboard_points.user_id
                      AND d.hidden_at IS NULL "
             . $this->groupExclusionSql($excludedGroupIds, 'd.user_id')
             . $this->tagExclusionSql($excludedTagIds, 'd.id')
@@ -185,13 +185,13 @@ class RecalculateService
         $p = $this->prefix;
 
         $this->db->delete(
-            "DELETE lp FROM {$p}leaderboard_points lp
-             WHERE lp.reason = 'post_created'
+            "DELETE FROM {$p}leaderboard_points
+             WHERE reason = 'post_created'
                AND NOT EXISTS (
                    SELECT 1 FROM {$p}posts p
                    JOIN {$p}users u ON u.id = p.user_id
-                   WHERE p.id = lp.subject_id
-                     AND p.user_id = lp.user_id
+                   WHERE p.id = {$p}leaderboard_points.subject_id
+                     AND p.user_id = {$p}leaderboard_points.user_id
                      AND p.type = 'comment' AND p.number > 1
                      AND p.hidden_at IS NULL "
             . $this->groupExclusionSql($excludedGroupIds, 'p.user_id')
@@ -222,14 +222,14 @@ class RecalculateService
         $p = $this->prefix;
 
         $this->db->delete(
-            "DELETE lp FROM {$p}leaderboard_points lp
-             WHERE lp.reason = 'like_received'
+            "DELETE FROM {$p}leaderboard_points
+             WHERE reason = 'like_received'
                AND NOT EXISTS (
                    SELECT 1 FROM {$p}post_likes pl
                    JOIN {$p}posts p ON p.id = pl.post_id
                    JOIN {$p}users u ON u.id = p.user_id
-                   WHERE pl.post_id = lp.subject_id
-                     AND pl.user_id = lp.actor_id
+                   WHERE pl.post_id = {$p}leaderboard_points.subject_id
+                     AND pl.user_id = {$p}leaderboard_points.actor_id
                      AND p.user_id != pl.user_id "
             . $this->groupExclusionSql($excludedGroupIds, 'p.user_id')
             . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
@@ -260,14 +260,14 @@ class RecalculateService
         $p = $this->prefix;
 
         $this->db->delete(
-            "DELETE lp FROM {$p}leaderboard_points lp
-             WHERE lp.reason = 'like_given'
+            "DELETE FROM {$p}leaderboard_points
+             WHERE reason = 'like_given'
                AND NOT EXISTS (
                    SELECT 1 FROM {$p}post_likes pl
                    JOIN {$p}posts p ON p.id = pl.post_id
                    JOIN {$p}users u ON u.id = pl.user_id
-                   WHERE pl.post_id = lp.subject_id
-                     AND pl.user_id = lp.user_id "
+                   WHERE pl.post_id = {$p}leaderboard_points.subject_id
+                     AND pl.user_id = {$p}leaderboard_points.user_id "
             . $this->groupExclusionSql($excludedGroupIds, 'pl.user_id')
             . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
             . ')'
@@ -296,14 +296,14 @@ class RecalculateService
         $p = $this->prefix;
 
         $this->db->delete(
-            "DELETE lp FROM {$p}leaderboard_points lp
-             WHERE lp.reason = 'reaction_received'
+            "DELETE FROM {$p}leaderboard_points
+             WHERE reason = 'reaction_received'
                AND NOT EXISTS (
                    SELECT 1 FROM {$p}post_reactions pr
                    JOIN {$p}posts p ON p.id = pr.post_id
                    JOIN {$p}users u ON u.id = p.user_id
-                   WHERE pr.post_id = lp.subject_id
-                     AND pr.user_id = lp.actor_id
+                   WHERE pr.post_id = {$p}leaderboard_points.subject_id
+                     AND pr.user_id = {$p}leaderboard_points.actor_id
                      AND p.user_id != pr.user_id "
             . $this->groupExclusionSql($excludedGroupIds, 'p.user_id')
             . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
@@ -334,14 +334,14 @@ class RecalculateService
         $p = $this->prefix;
 
         $this->db->delete(
-            "DELETE lp FROM {$p}leaderboard_points lp
-             WHERE lp.reason = 'reaction_given'
+            "DELETE FROM {$p}leaderboard_points
+             WHERE reason = 'reaction_given'
                AND NOT EXISTS (
                    SELECT 1 FROM {$p}post_reactions pr
                    JOIN {$p}posts p ON p.id = pr.post_id
                    JOIN {$p}users u ON u.id = pr.user_id
-                   WHERE pr.post_id = lp.subject_id
-                     AND pr.user_id = lp.user_id "
+                   WHERE pr.post_id = {$p}leaderboard_points.subject_id
+                     AND pr.user_id = {$p}leaderboard_points.user_id "
             . $this->groupExclusionSql($excludedGroupIds, 'pr.user_id')
             . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
             . ')'
@@ -370,14 +370,14 @@ class RecalculateService
         $p = $this->prefix;
 
         $this->db->delete(
-            "DELETE lp FROM {$p}leaderboard_points lp
-             WHERE lp.reason = 'best_answer'
+            "DELETE FROM {$p}leaderboard_points
+             WHERE reason = 'best_answer'
                AND NOT EXISTS (
                    SELECT 1 FROM {$p}discussions d
                    JOIN {$p}posts p ON p.id = d.best_answer_post_id
                    JOIN {$p}users u ON u.id = p.user_id
-                   WHERE d.id = lp.subject_id
-                     AND p.user_id = lp.user_id
+                   WHERE d.id = {$p}leaderboard_points.subject_id
+                     AND p.user_id = {$p}leaderboard_points.user_id
                      AND d.best_answer_post_id IS NOT NULL "
             . $this->groupExclusionSql($excludedGroupIds, 'p.user_id')
             . $this->tagExclusionSql($excludedTagIds, 'd.id')
@@ -408,14 +408,14 @@ class RecalculateService
         $p = $this->prefix;
 
         $this->db->delete(
-            "DELETE lp FROM {$p}leaderboard_points lp
-             WHERE lp.reason IN ('upvote_received', 'downvote_received')
+            "DELETE FROM {$p}leaderboard_points
+             WHERE reason IN ('upvote_received', 'downvote_received')
                AND NOT EXISTS (
                    SELECT 1 FROM {$p}post_votes pv
                    JOIN {$p}posts p ON p.id = pv.post_id
                    JOIN {$p}users u ON u.id = p.user_id
-                   WHERE pv.post_id = lp.subject_id
-                     AND pv.user_id = lp.actor_id
+                   WHERE pv.post_id = {$p}leaderboard_points.subject_id
+                     AND pv.user_id = {$p}leaderboard_points.actor_id
                      AND pv.value IN (1, -1)
                      AND p.user_id != pv.user_id "
             . $this->groupExclusionSql($excludedGroupIds, 'p.user_id')
@@ -450,13 +450,13 @@ class RecalculateService
         $p = $this->prefix;
 
         $this->db->delete(
-            "DELETE lp FROM {$p}leaderboard_points lp
-             WHERE lp.reason = 'badge_earned'
+            "DELETE FROM {$p}leaderboard_points
+             WHERE reason = 'badge_earned'
                AND NOT EXISTS (
                    SELECT 1 FROM {$p}fof_badge_user ub
                    JOIN {$p}users u ON u.id = ub.user_id
-                   WHERE ub.badge_id = lp.subject_id
-                     AND ub.user_id = lp.user_id "
+                   WHERE ub.badge_id = {$p}leaderboard_points.subject_id
+                     AND ub.user_id = {$p}leaderboard_points.user_id "
             . $this->groupExclusionSql($excludedGroupIds, 'ub.user_id')
             . ')'
         );

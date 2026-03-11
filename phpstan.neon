@@ -12,6 +12,7 @@ parameters:
         - migrations
     ignoreErrors:
         - '#Negated boolean expression is always false#'
+        - '#FoF\\Badges\\#'
         -
             message: '#Access to an undefined property .+::\$period_points#'
             path: src/Api/Controller/ListLeaderboardController.php
