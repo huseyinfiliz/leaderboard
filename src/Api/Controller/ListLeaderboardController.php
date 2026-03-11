@@ -236,7 +236,7 @@ class ListLeaderboardController implements RequestHandlerInterface
             ->selectRaw("user_id, SUM({$pointsCase['sql']}) as period_points", $pointsCase['bindings'])
             ->where('created_at', '>=', $periodStart)
             ->groupBy('user_id')
-            ->havingRaw('period_points > 0')
+            ->havingRaw("SUM({$pointsCase['sql']}) > 0", $pointsCase['bindings'])
             ->orderByDesc('period_points')
             ->orderBy('user_id');
 
@@ -248,7 +248,21 @@ class ListLeaderboardController implements RequestHandlerInterface
             });
         }
 
-        $total = (clone $query)->getQuery()->getCountForPagination();
+        $countQuery = LeaderboardPoint::query()
+            ->selectRaw("user_id")
+            ->where('created_at', '>=', $periodStart)
+            ->groupBy('user_id')
+            ->havingRaw("SUM({$pointsCase['sql']}) > 0", $pointsCase['bindings']);
+
+        if (!empty($excludedGroupIds)) {
+            $countQuery->whereNotIn('user_id', function ($sub) use ($excludedGroupIds) {
+                $sub->select('user_id')
+                    ->from('group_user')
+                    ->whereIn('group_id', $excludedGroupIds);
+            });
+        }
+
+        $total = $countQuery->getQuery()->getCountForPagination(['user_id']);
 
         $rows = $query->offset($offset)->limit($limit)->get();
 
