@@ -51,6 +51,10 @@ class PointService
 
         LeaderboardUserTotal::where('user_id', $user->id)
             ->increment('points_total', $points);
+
+        if ($reason !== 'daily_login') {
+            $this->checkDailyLogin($user);
+        }
     }
 
     public function revoke(User $user, string $reason, ?int $subjectId = null, ?string $subjectType = null, ?int $actorId = null): void
