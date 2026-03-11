@@ -24,7 +24,9 @@ export default class LeaderboardPage extends Page<IPageAttrs, LeaderboardState> 
   oncreate(vnode: Mithril.VnodeDOM<IPageAttrs, this>) {
     super.oncreate(vnode);
 
-    const leaderboardName = app.forum.attribute('huseyinfiliz-leaderboard.leaderboard_name') || extractText(app.translator.trans('huseyinfiliz-leaderboard.forum.nav.leaderboard'));
+    const leaderboardName =
+      (app.forum.attribute<string>('huseyinfiliz-leaderboard.leaderboard_name') as string) ||
+      extractText(app.translator.trans('huseyinfiliz-leaderboard.forum.nav.leaderboard'));
     app.setTitle(leaderboardName);
   }
 
@@ -59,11 +61,7 @@ export default class LeaderboardPage extends Page<IPageAttrs, LeaderboardState> 
   contentView(): Mithril.Children {
     return [
       <div className="LeaderboardPage-filters">
-        <button
-          className="Button LeaderboardPage-refreshBtn"
-          onclick={() => this.state.load(this.state.period)}
-          disabled={!this.state.isFullyLoaded}
-        >
+        <button className="Button LeaderboardPage-refreshBtn" onclick={() => this.state.load(this.state.period)} disabled={!this.state.isFullyLoaded}>
           <i className="fas fa-sync-alt" />
         </button>
         {PERIODS.map((p) => (
