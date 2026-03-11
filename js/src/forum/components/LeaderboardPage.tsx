@@ -3,6 +3,7 @@ import app from 'flarum/forum/app';
 import Page from 'flarum/common/components/Page';
 import type { IPageAttrs } from 'flarum/common/components/Page';
 import PageStructure from 'flarum/forum/components/PageStructure';
+import extractText from 'flarum/common/utils/extractText';
 import type Mithril from 'mithril';
 
 import PodiumSection from './PodiumSection';
@@ -18,6 +19,13 @@ export default class LeaderboardPage extends Page<IPageAttrs, LeaderboardState> 
 
     this.state = new LeaderboardState();
     this.state.load('all');
+  }
+
+  oncreate(vnode: Mithril.VnodeDOM<IPageAttrs, this>) {
+    super.oncreate(vnode);
+
+    const leaderboardName = app.forum.attribute('huseyinfiliz-leaderboard.leaderboard_name') || extractText(app.translator.trans('huseyinfiliz-leaderboard.forum.nav.leaderboard'));
+    app.setTitle(leaderboardName);
   }
 
   view() {
