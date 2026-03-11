@@ -2,8 +2,7 @@ import IndexSidebar from 'flarum/forum/components/IndexSidebar';
 import app from 'flarum/forum/app';
 import Page from 'flarum/common/components/Page';
 import type { IPageAttrs } from 'flarum/common/components/Page';
-import IndexPage from 'flarum/forum/components/IndexPage';
-import listItems from 'flarum/common/helpers/listItems';
+import PageStructure from 'flarum/forum/components/PageStructure';
 import type Mithril from 'mithril';
 
 import PodiumSection from './PodiumSection';
@@ -22,62 +21,67 @@ export default class LeaderboardPage extends Page<IPageAttrs, LeaderboardState> 
   }
 
   view() {
+    return (
+      <PageStructure className="IndexPage LeaderboardPage" hero={this.hero.bind(this)} sidebar={this.sidebar.bind(this)}>
+        {this.contentView()}
+      </PageStructure>
+    );
+  }
+
+  hero(): Mithril.Children {
     const leaderboardName = app.forum.attribute('huseyinfiliz-leaderboard.leaderboard_name') || 'Leaderboard';
 
     return (
-      <div className="IndexPage LeaderboardPage">
-        <header className="Hero LeaderboardHero">
-          <div className="container">
-            <div className="containerNarrow">
-              <h1 className="Hero-title">
-                <i aria-hidden="true" className="icon fas fa-trophy" /> {leaderboardName}
-              </h1>
-            </div>
-          </div>
-        </header>
-
+      <header className="Hero LeaderboardHero">
         <div className="container">
-          <div className="sideNavContainer">
-            <nav className="IndexPage-nav sideNav">
-              <ul>{listItems(IndexSidebar.prototype.items().toArray())}</ul>
-            </nav>
-            <div className="IndexPage-results sideNavOffset">
-              <div className="LeaderboardPage-filters">
-                <button
-                  className="Button LeaderboardPage-refreshBtn"
-                  onclick={() => this.state.load(this.state.period)}
-                  disabled={!this.state.isFullyLoaded}
-                >
-                  <i className="fas fa-sync-alt" />
-                </button>
-                {PERIODS.map((p) => (
-                  <button
-                    key={p}
-                    className={'Button LeaderboardPage-filterBtn' + (this.state.period === p ? ' active' : '')}
-                    onclick={() => this.state.load(p)}
-                    disabled={!this.state.isFullyLoaded}
-                  >
-                    {app.translator.trans(`huseyinfiliz-leaderboard.forum.period.${p}`)}
-                  </button>
-                ))}
-              </div>
-
-              {this.state.isEmpty ? (
-                <div className="LeaderboardPage-empty">
-                  <p>{app.translator.trans('huseyinfiliz-leaderboard.forum.list.no_results')}</p>
-                </div>
-              ) : (
-                <div className="LeaderboardPage-content">
-                  {this.podiumView()}
-                  {this.contendersView()}
-                  {this.honorableView()}
-                </div>
-              )}
-            </div>
+          <div className="containerNarrow">
+            <h1 className="Hero-title">
+              <i aria-hidden="true" className="icon fas fa-trophy" /> {leaderboardName}
+            </h1>
           </div>
         </div>
-      </div>
+      </header>
     );
+  }
+
+  sidebar(): Mithril.Children {
+    return <IndexSidebar />;
+  }
+
+  contentView(): Mithril.Children {
+    return [
+      <div className="LeaderboardPage-filters">
+        <button
+          className="Button LeaderboardPage-refreshBtn"
+          onclick={() => this.state.load(this.state.period)}
+          disabled={!this.state.isFullyLoaded}
+        >
+          <i className="fas fa-sync-alt" />
+        </button>
+        {PERIODS.map((p) => (
+          <button
+            key={p}
+            className={'Button LeaderboardPage-filterBtn' + (this.state.period === p ? ' active' : '')}
+            onclick={() => this.state.load(p)}
+            disabled={!this.state.isFullyLoaded}
+          >
+            {app.translator.trans(`huseyinfiliz-leaderboard.forum.period.${p}`)}
+          </button>
+        ))}
+      </div>,
+
+      this.state.isEmpty ? (
+        <div className="LeaderboardPage-empty">
+          <p>{app.translator.trans('huseyinfiliz-leaderboard.forum.list.no_results')}</p>
+        </div>
+      ) : (
+        <div className="LeaderboardPage-content">
+          {this.podiumView()}
+          {this.contendersView()}
+          {this.honorableView()}
+        </div>
+      ),
+    ];
   }
 
   podiumView() {
