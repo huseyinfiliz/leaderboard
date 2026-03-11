@@ -3,7 +3,6 @@ includes:
 
 parameters:
     level: 6
-    checkMissingIterableValueType: false
     paths:
         - extend.php
         - src
@@ -14,6 +13,9 @@ parameters:
     ignoreErrors:
         - '#Negated boolean expression is always false#'
         - '#FoF\\Badges\\#'
+        -
+            message: '#nullsafe property access.*is unnecessary#'
+            path: extend.php
         -
             message: '#Access to an undefined property .+::\$period_points#'
             path: src/Api/Controller/ListLeaderboardController.php
