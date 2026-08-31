@@ -17,6 +17,8 @@ app.initializers.add('huseyinfiliz/leaderboard', () => {
 
   // Add sidebar nav link
   extend(IndexSidebar.prototype, 'navItems', function (items) {
+    if (!app.forum.attribute('canViewLeaderboard')) return;
+
     const leaderboardName = app.forum.attribute('huseyinfiliz-leaderboard.leaderboard_name') || 'Leaderboard';
 
     items.add(

@@ -17,6 +17,8 @@ export default class LeaderboardPage extends Page<IPageAttrs, LeaderboardState> 
   oninit(vnode: Mithril.Vnode<IPageAttrs, this>) {
     super.oninit(vnode);
 
+    if (!app.forum.attribute('canViewLeaderboard')) return;
+
     this.state = new LeaderboardState();
     this.state.load('all');
   }
@@ -59,6 +61,14 @@ export default class LeaderboardPage extends Page<IPageAttrs, LeaderboardState> 
   }
 
   contentView(): Mithril.Children {
+    if (!app.forum.attribute('canViewLeaderboard')) {
+      return (
+        <div className="LeaderboardPage-denied">
+          <p>{app.translator.trans('huseyinfiliz-leaderboard.forum.permission_denied')}</p>
+        </div>
+      );
+    }
+
     return [
       <div className="LeaderboardPage-filters">
         <button className="Button LeaderboardPage-refreshBtn" onclick={() => this.state.load(this.state.period)} disabled={!this.state.isFullyLoaded}>

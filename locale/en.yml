@@ -5,6 +5,8 @@ huseyinfiliz-leaderboard:
       points: Points
       exclusions: Exclusions
       maintenance: Maintenance
+    permissions:
+      view_leaderboard: View Leaderboard
     modals:
       save: Save
       cancel: Cancel
@@ -74,6 +76,7 @@ huseyinfiliz-leaderboard:
       sync_step_rebuild_totals: Rebuilding totals...
 
   forum:
+    permission_denied: You do not have permission to view the leaderboard.
     period:
       daily: Daily
       weekly: Weekly

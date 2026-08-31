@@ -11,6 +11,7 @@
 
 namespace HuseyinFiliz\Leaderboard;
 
+use Flarum\Api\Context;
 use Flarum\Api\Endpoint;
 use Flarum\Api\Resource;
 use Flarum\Api\Schema;
@@ -41,6 +42,16 @@ return [
 
     (new Extend\Model(User::class))
         ->hasOne('leaderboardTotal', Model\LeaderboardUserTotal::class, 'user_id'),
+
+    // [F3] View Leaderboard permission — exposed to forum so the frontend can
+    // hide the nav item / show a permission-denied message without an extra request.
+    (new Extend\ApiResource(Resource\ForumResource::class))
+        ->fields(fn () => [
+            Schema\Boolean::make('canViewLeaderboard')
+                ->get(fn ($forum, Context $context) =>
+                    $context->getActor()->hasPermission('huseyinfiliz-leaderboard.viewLeaderboard')
+                ),
+        ]),
 
     (new Extend\ApiResource(Resource\UserResource::class))
         ->fields(fn () => [

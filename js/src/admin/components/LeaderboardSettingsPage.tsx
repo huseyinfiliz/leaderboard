@@ -7,6 +7,7 @@ import type Group from 'flarum/common/models/Group';
 import type Mithril from 'mithril';
 
 import SelectGroupsModal from './SelectGroupsModal';
+import SelectTagsModal from './SelectTagsModal';
 import RecalculateModal from './RecalculateModal';
 
 const POINT_REASONS = [
@@ -342,14 +343,11 @@ export default class LeaderboardSettingsPage extends ExtensionPage {
           className="Button"
           icon="fas fa-tags"
           onclick={() => {
-            const currentSelected = allTags.filter((t: any) => this.selectedTagIds.includes(Number(t.id())));
-
-            app.modal.show(() => import('ext:flarum/tags/common/components/TagSelectionModal'), {
-              selectedTags: currentSelected,
-              onsubmit: (tags: any[]) => {
-                this.selectedTagIds = tags.map((t: any) => Number(t.id()));
-                this.setting('huseyinfiliz-leaderboard.excluded_tags')(JSON.stringify(this.selectedTagIds));
-                m.redraw();
+            app.modal.show(SelectTagsModal, {
+              selectedTagIds: this.selectedTagIds,
+              onsubmit: (ids: number[]) => {
+                this.selectedTagIds = ids;
+                this.setting('huseyinfiliz-leaderboard.excluded_tags')(JSON.stringify(ids));
               },
             });
           }}

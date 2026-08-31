@@ -3,8 +3,11 @@
 namespace HuseyinFiliz\Leaderboard\Api\Controller;
 
 use Carbon\Carbon;
+use Flarum\Http\SlugManager;
 use Flarum\Http\UrlGenerator;
+use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Flarum\User\Exception\PermissionDeniedException;
 use Flarum\User\User;
 use HuseyinFiliz\Leaderboard\Api\Data\LeaderboardEntryData;
 use HuseyinFiliz\Leaderboard\Model\LeaderboardPoint;
@@ -25,12 +28,19 @@ class ListLeaderboardController implements RequestHandlerInterface
     public function __construct(
         protected SettingsRepositoryInterface $settings,
         protected UrlGenerator $url,
-        protected PointService $pointService
+        protected PointService $pointService,
+        protected SlugManager $slugManager
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $actor = RequestUtil::getActor($request);
+
+        if (!$actor->hasPermission('huseyinfiliz-leaderboard.viewLeaderboard')) {
+            throw new PermissionDeniedException();
+        }
+
         $params = $request->getQueryParams();
         $filter = Arr::get($params, 'filter', []);
         $period = is_array($filter) ? Arr::get($filter, 'period', 'all') : 'all';
@@ -126,7 +136,7 @@ class ListLeaderboardController implements RequestHandlerInterface
         $attributes = [
             'username' => $user->username,
             'displayName' => $user->display_name,
-            'slug' => $user->username,
+            'slug' => $this->slugManager->forResource(User::class)->toSlug($user),
         ];
 
         if ($user->avatar_url) {
