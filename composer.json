@@ -13,7 +13,7 @@
     "support": {
         "issues": "https://github.com/huseyinfiliz/leaderboard/issues",
         "source": "https://github.com/huseyinfiliz/leaderboard",
-        "forum": "https://discuss.flarum.org/d/38762-fof-badges"
+        "forum": "https://discuss.flarum.org/d/38834-leaderboard-points-based-ranking-system"
     },
     "require": {
         "php": "^8.2",
