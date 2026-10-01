@@ -16,7 +16,7 @@ class PostReactedListener
         $postAuthor = $event->post->user;
         $reactor = $event->user;
 
-        if (!$postAuthor) {
+        if (! $postAuthor) {
             return;
         }
 
@@ -25,7 +25,7 @@ class PostReactedListener
         }
 
         // Award points to post author (skip self-reaction)
-        if ($reactor->id !== $postAuthor->id && !$this->pointService->isExcludedByGroup($postAuthor)) {
+        if ($reactor->id !== $postAuthor->id && ! $this->pointService->isExcludedByGroup($postAuthor)) {
             // Revoke previous reaction from this user on this post first
             $this->pointService->revoke(
                 $postAuthor,
@@ -48,7 +48,7 @@ class PostReactedListener
         }
 
         // Award points to the reactor for giving a reaction
-        if (!$this->pointService->isExcludedByGroup($reactor)) {
+        if (! $this->pointService->isExcludedByGroup($reactor)) {
             // Revoke previous reaction_given first (handles changed reactions)
             $this->pointService->revoke(
                 $reactor,

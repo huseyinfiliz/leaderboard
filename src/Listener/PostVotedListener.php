@@ -18,7 +18,7 @@ class PostVotedListener
         $recipient = $post->user;
         $voter = $vote->user;
 
-        if (!$recipient || !$voter) {
+        if (! $recipient || ! $voter) {
             return;
         }
 

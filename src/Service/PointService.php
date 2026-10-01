@@ -142,7 +142,7 @@ class PointService
 
     public function isExcludedByTags(Discussion $discussion): bool
     {
-        if (!$this->extensions->isEnabled('flarum-tags')) {
+        if (! $this->extensions->isEnabled('flarum-tags')) {
             return false;
         }
 
@@ -174,7 +174,7 @@ class PointService
         $today = Carbon::today()->toDateString();
         $cacheKey = "leaderboard_daily_login:{$user->id}:{$today}";
 
-        if (!$this->cache->add($cacheKey, true, 86400)) {
+        if (! $this->cache->add($cacheKey, true, 86400)) {
             return;
         }
 

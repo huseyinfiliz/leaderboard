@@ -26,7 +26,7 @@ return [
             ];
         }
 
-        if (!empty($rows)) {
+        if (! empty($rows)) {
             $connection->table('group_permission')->insert($rows);
         }
     },

@@ -15,7 +15,7 @@ class BestAnswerSetListener
     {
         $answerAuthor = $event->post->user;
 
-        if (!$answerAuthor) {
+        if (! $answerAuthor) {
             return;
         }
 

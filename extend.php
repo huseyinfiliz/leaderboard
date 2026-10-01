@@ -48,8 +48,8 @@ return [
     (new Extend\ApiResource(Resource\ForumResource::class))
         ->fields(fn () => [
             Schema\Boolean::make('canViewLeaderboard')
-                ->get(fn ($forum, Context $context) =>
-                    $context->getActor()->hasPermission('huseyinfiliz-leaderboard.viewLeaderboard')
+                ->get(
+                    fn ($forum, Context $context) => $context->getActor()->hasPermission('huseyinfiliz-leaderboard.viewLeaderboard')
                 ),
         ]),
 

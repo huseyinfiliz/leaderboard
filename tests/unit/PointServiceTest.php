@@ -15,8 +15,8 @@ use Flarum\Extension\ExtensionManager;
 use Flarum\Settings\SettingsRepositoryInterface;
 use HuseyinFiliz\Leaderboard\Service\PointService;
 use Mockery as m;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 class PointServiceTest extends TestCase
 {

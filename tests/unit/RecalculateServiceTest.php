@@ -16,8 +16,8 @@ use HuseyinFiliz\Leaderboard\Service\PointService;
 use HuseyinFiliz\Leaderboard\Service\RecalculateService;
 use Illuminate\Database\ConnectionInterface;
 use Mockery as m;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 class RecalculateServiceTest extends TestCase
 {

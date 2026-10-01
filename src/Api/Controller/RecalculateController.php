@@ -61,6 +61,7 @@ class RecalculateController implements RequestHandlerInterface
             $result = $this->recalculateService->executeSyncStep($step);
         } catch (\Throwable $e) {
             $this->cache->forget(self::LOCK_KEY);
+
             throw $e;
         }
 

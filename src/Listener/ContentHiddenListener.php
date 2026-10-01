@@ -24,7 +24,7 @@ class ContentHiddenListener
     {
         $user = $event->post->user;
 
-        if (!$user) {
+        if (! $user) {
             return;
         }
 
@@ -42,7 +42,7 @@ class ContentHiddenListener
     {
         $user = $event->discussion->user;
 
-        if (!$user) {
+        if (! $user) {
             return;
         }
 

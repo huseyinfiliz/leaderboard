@@ -24,7 +24,7 @@ class ContentRestoredListener
     {
         $user = $event->post->user;
 
-        if (!$user) {
+        if (! $user) {
             return;
         }
 
@@ -67,7 +67,7 @@ class ContentRestoredListener
     {
         $user = $event->discussion->user;
 
-        if (!$user) {
+        if (! $user) {
             return;
         }
 

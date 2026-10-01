@@ -12,8 +12,8 @@
 namespace HuseyinFiliz\Leaderboard\Tests\Unit;
 
 use HuseyinFiliz\Leaderboard\Model\LeaderboardPoint;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 class LeaderboardPointModelTest extends TestCase
 {

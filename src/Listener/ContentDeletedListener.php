@@ -27,7 +27,7 @@ class ContentDeletedListener
     {
         $user = $event->post->user;
 
-        if (!$user) {
+        if (! $user) {
             return;
         }
 

@@ -3,9 +3,9 @@
 namespace HuseyinFiliz\Leaderboard\Api\Controller;
 
 use Carbon\Carbon;
+use Flarum\Http\RequestUtil;
 use Flarum\Http\SlugManager;
 use Flarum\Http\UrlGenerator;
-use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Exception\PermissionDeniedException;
 use Flarum\User\User;
@@ -37,7 +37,7 @@ class ListLeaderboardController implements RequestHandlerInterface
     {
         $actor = RequestUtil::getActor($request);
 
-        if (!$actor->hasPermission('huseyinfiliz-leaderboard.viewLeaderboard')) {
+        if (! $actor->hasPermission('huseyinfiliz-leaderboard.viewLeaderboard')) {
             throw new PermissionDeniedException();
         }
 
@@ -103,7 +103,7 @@ class ListLeaderboardController implements RequestHandlerInterface
                     ],
                 ];
 
-                if (!isset($seenUsers[$entry->user->id])) {
+                if (! isset($seenUsers[$entry->user->id])) {
                     $included[] = $this->serializeUser($entry->user);
                     $seenUsers[$entry->user->id] = true;
                 }
@@ -114,7 +114,7 @@ class ListLeaderboardController implements RequestHandlerInterface
 
         $response = ['data' => $data];
 
-        if (!empty($included)) {
+        if (! empty($included)) {
             $response['included'] = $included;
         }
 
@@ -167,18 +167,18 @@ class ListLeaderboardController implements RequestHandlerInterface
         if ($offset > 0) {
             $firstParams = $queryParams;
             $firstParams['page'] = ['offset' => 0];
-            $links['first'] = $baseUrl . '?' . http_build_query($firstParams, '', '&', PHP_QUERY_RFC3986);
+            $links['first'] = $baseUrl.'?'.http_build_query($firstParams, '', '&', PHP_QUERY_RFC3986);
 
             $prevOffset = max(0, $offset - $limit);
             $prevParams = $queryParams;
             $prevParams['page'] = ['offset' => $prevOffset];
-            $links['prev'] = $baseUrl . '?' . http_build_query($prevParams, '', '&', PHP_QUERY_RFC3986);
+            $links['prev'] = $baseUrl.'?'.http_build_query($prevParams, '', '&', PHP_QUERY_RFC3986);
         }
 
         if ($hasMore) {
             $nextParams = $queryParams;
             $nextParams['page'] = ['offset' => $offset + $limit];
-            $links['next'] = $baseUrl . '?' . http_build_query($nextParams, '', '&', PHP_QUERY_RFC3986);
+            $links['next'] = $baseUrl.'?'.http_build_query($nextParams, '', '&', PHP_QUERY_RFC3986);
         }
 
         return $links;
@@ -206,7 +206,7 @@ class ListLeaderboardController implements RequestHandlerInterface
             ->orderBy('points_total', 'desc')
             ->orderBy('user_id');
 
-        if (!empty($excludedGroupIds)) {
+        if (! empty($excludedGroupIds)) {
             $query->whereNotIn('user_id', function ($sub) use ($excludedGroupIds) {
                 $sub->select('user_id')
                     ->from('group_user')
@@ -223,7 +223,7 @@ class ListLeaderboardController implements RequestHandlerInterface
         $entries = [];
         foreach ($rows as $index => $row) {
             $user = $users->get($row->user_id);
-            if (!$user) {
+            if (! $user) {
                 continue;
             }
 
@@ -250,7 +250,7 @@ class ListLeaderboardController implements RequestHandlerInterface
             ->orderByDesc('period_points')
             ->orderBy('user_id');
 
-        if (!empty($excludedGroupIds)) {
+        if (! empty($excludedGroupIds)) {
             $query->whereNotIn('user_id', function ($sub) use ($excludedGroupIds) {
                 $sub->select('user_id')
                     ->from('group_user')
@@ -259,12 +259,12 @@ class ListLeaderboardController implements RequestHandlerInterface
         }
 
         $countQuery = LeaderboardPoint::query()
-            ->selectRaw("user_id")
+            ->selectRaw('user_id')
             ->where('created_at', '>=', $periodStart)
             ->groupBy('user_id')
             ->havingRaw("SUM({$pointsCase['sql']}) > 0", $pointsCase['bindings']);
 
-        if (!empty($excludedGroupIds)) {
+        if (! empty($excludedGroupIds)) {
             $countQuery->whereNotIn('user_id', function ($sub) use ($excludedGroupIds) {
                 $sub->select('user_id')
                     ->from('group_user')
@@ -282,7 +282,7 @@ class ListLeaderboardController implements RequestHandlerInterface
         $entries = [];
         foreach ($rows as $index => $row) {
             $user = $users->get($row->user_id);
-            if (!$user) {
+            if (! $user) {
                 continue;
             }
 

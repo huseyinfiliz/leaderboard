@@ -13,7 +13,7 @@ class DiscussionStartedListener
 
     public function handle(Started $event): void
     {
-        if (!$event->actor) {
+        if (! $event->actor) {
             return;
         }
 

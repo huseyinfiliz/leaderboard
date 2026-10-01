@@ -160,9 +160,9 @@ class RecalculateService
                    WHERE d.id = {$p}leaderboard_points.subject_id
                      AND d.user_id = {$p}leaderboard_points.user_id
                      AND d.hidden_at IS NULL "
-            . $this->groupExclusionSql($excludedGroupIds, 'd.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'd.id')
-            . ')'
+            .$this->groupExclusionSql($excludedGroupIds, 'd.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'd.id')
+            .')'
         );
 
         $sql = "INSERT INTO {$p}leaderboard_points (user_id, reason, subject_id, subject_type, created_at)
@@ -176,8 +176,8 @@ class RecalculateService
                         AND lp.subject_id = d.id
                         AND lp.user_id = d.user_id
                   ) "
-            . $this->groupExclusionSql($excludedGroupIds, 'd.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'd.id');
+            .$this->groupExclusionSql($excludedGroupIds, 'd.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'd.id');
 
         $this->db->insert($sql);
     }
@@ -196,9 +196,9 @@ class RecalculateService
                      AND p.user_id = {$p}leaderboard_points.user_id
                      AND p.type = 'comment' AND p.number > 1
                      AND p.hidden_at IS NULL "
-            . $this->groupExclusionSql($excludedGroupIds, 'p.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
-            . ')'
+            .$this->groupExclusionSql($excludedGroupIds, 'p.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
+            .')'
         );
 
         $sql = "INSERT INTO {$p}leaderboard_points (user_id, reason, subject_id, subject_type, created_at)
@@ -213,8 +213,8 @@ class RecalculateService
                         AND lp.subject_id = p.id
                         AND lp.user_id = p.user_id
                   ) "
-            . $this->groupExclusionSql($excludedGroupIds, 'p.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id');
+            .$this->groupExclusionSql($excludedGroupIds, 'p.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'p.discussion_id');
 
         $this->db->insert($sql);
     }
@@ -233,9 +233,9 @@ class RecalculateService
                    WHERE pl.post_id = {$p}leaderboard_points.subject_id
                      AND pl.user_id = {$p}leaderboard_points.actor_id
                      AND p.user_id != pl.user_id "
-            . $this->groupExclusionSql($excludedGroupIds, 'p.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
-            . ')'
+            .$this->groupExclusionSql($excludedGroupIds, 'p.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
+            .')'
         );
 
         $sql = "INSERT INTO {$p}leaderboard_points (user_id, reason, subject_id, subject_type, actor_id, created_at)
@@ -251,8 +251,8 @@ class RecalculateService
                         AND lp.subject_id = pl.post_id
                         AND lp.actor_id = pl.user_id
                   ) "
-            . $this->groupExclusionSql($excludedGroupIds, 'p.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id');
+            .$this->groupExclusionSql($excludedGroupIds, 'p.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'p.discussion_id');
 
         $this->db->insert($sql);
     }
@@ -270,9 +270,9 @@ class RecalculateService
                    JOIN {$p}users u ON u.id = pl.user_id
                    WHERE pl.post_id = {$p}leaderboard_points.subject_id
                      AND pl.user_id = {$p}leaderboard_points.user_id "
-            . $this->groupExclusionSql($excludedGroupIds, 'pl.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
-            . ')'
+            .$this->groupExclusionSql($excludedGroupIds, 'pl.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
+            .')'
         );
 
         $sql = "INSERT INTO {$p}leaderboard_points (user_id, reason, subject_id, subject_type, actor_id, created_at)
@@ -287,8 +287,8 @@ class RecalculateService
                         AND lp.subject_id = pl.post_id
                         AND lp.user_id = pl.user_id
                   ) "
-            . $this->groupExclusionSql($excludedGroupIds, 'pl.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id');
+            .$this->groupExclusionSql($excludedGroupIds, 'pl.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'p.discussion_id');
 
         $this->db->insert($sql);
     }
@@ -307,9 +307,9 @@ class RecalculateService
                    WHERE pr.post_id = {$p}leaderboard_points.subject_id
                      AND pr.user_id = {$p}leaderboard_points.actor_id
                      AND p.user_id != pr.user_id "
-            . $this->groupExclusionSql($excludedGroupIds, 'p.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
-            . ')'
+            .$this->groupExclusionSql($excludedGroupIds, 'p.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
+            .')'
         );
 
         $sql = "INSERT INTO {$p}leaderboard_points (user_id, reason, subject_id, subject_type, actor_id, created_at)
@@ -325,8 +325,8 @@ class RecalculateService
                         AND lp.subject_id = pr.post_id
                         AND lp.actor_id = pr.user_id
                   ) "
-            . $this->groupExclusionSql($excludedGroupIds, 'p.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id');
+            .$this->groupExclusionSql($excludedGroupIds, 'p.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'p.discussion_id');
 
         $this->db->insert($sql);
     }
@@ -344,9 +344,9 @@ class RecalculateService
                    JOIN {$p}users u ON u.id = pr.user_id
                    WHERE pr.post_id = {$p}leaderboard_points.subject_id
                      AND pr.user_id = {$p}leaderboard_points.user_id "
-            . $this->groupExclusionSql($excludedGroupIds, 'pr.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
-            . ')'
+            .$this->groupExclusionSql($excludedGroupIds, 'pr.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
+            .')'
         );
 
         $sql = "INSERT INTO {$p}leaderboard_points (user_id, reason, subject_id, subject_type, actor_id, created_at)
@@ -361,8 +361,8 @@ class RecalculateService
                         AND lp.subject_id = pr.post_id
                         AND lp.user_id = pr.user_id
                   ) "
-            . $this->groupExclusionSql($excludedGroupIds, 'pr.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id');
+            .$this->groupExclusionSql($excludedGroupIds, 'pr.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'p.discussion_id');
 
         $this->db->insert($sql);
     }
@@ -381,9 +381,9 @@ class RecalculateService
                    WHERE d.id = {$p}leaderboard_points.subject_id
                      AND p.user_id = {$p}leaderboard_points.user_id
                      AND d.best_answer_post_id IS NOT NULL "
-            . $this->groupExclusionSql($excludedGroupIds, 'p.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'd.id')
-            . ')'
+            .$this->groupExclusionSql($excludedGroupIds, 'p.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'd.id')
+            .')'
         );
 
         $sql = "INSERT INTO {$p}leaderboard_points (user_id, reason, subject_id, subject_type, created_at)
@@ -399,8 +399,8 @@ class RecalculateService
                         AND lp.subject_id = d.id
                         AND lp.user_id = p.user_id
                   ) "
-            . $this->groupExclusionSql($excludedGroupIds, 'p.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'd.id');
+            .$this->groupExclusionSql($excludedGroupIds, 'p.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'd.id');
 
         $this->db->insert($sql);
     }
@@ -420,9 +420,9 @@ class RecalculateService
                      AND pv.user_id = {$p}leaderboard_points.actor_id
                      AND pv.value IN (1, -1)
                      AND p.user_id != pv.user_id "
-            . $this->groupExclusionSql($excludedGroupIds, 'p.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
-            . ')'
+            .$this->groupExclusionSql($excludedGroupIds, 'p.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'p.discussion_id')
+            .')'
         );
 
         $sql = "INSERT INTO {$p}leaderboard_points (user_id, reason, subject_id, subject_type, actor_id, created_at)
@@ -441,8 +441,8 @@ class RecalculateService
                         AND lp.subject_id = pv.post_id
                         AND lp.actor_id = pv.user_id
                   ) "
-            . $this->groupExclusionSql($excludedGroupIds, 'p.user_id')
-            . $this->tagExclusionSql($excludedTagIds, 'p.discussion_id');
+            .$this->groupExclusionSql($excludedGroupIds, 'p.user_id')
+            .$this->tagExclusionSql($excludedTagIds, 'p.discussion_id');
 
         $this->db->insert($sql);
     }
@@ -459,8 +459,8 @@ class RecalculateService
                    JOIN {$p}users u ON u.id = ub.user_id
                    WHERE ub.badge_id = {$p}leaderboard_points.subject_id
                      AND ub.user_id = {$p}leaderboard_points.user_id "
-            . $this->groupExclusionSql($excludedGroupIds, 'ub.user_id')
-            . ')'
+            .$this->groupExclusionSql($excludedGroupIds, 'ub.user_id')
+            .')'
         );
 
         $sql = "INSERT INTO {$p}leaderboard_points (user_id, reason, subject_id, subject_type, created_at)
@@ -473,7 +473,7 @@ class RecalculateService
                       AND lp.subject_id = ub.badge_id
                       AND lp.user_id = ub.user_id
                 ) "
-            . $this->groupExclusionSql($excludedGroupIds, 'ub.user_id');
+            .$this->groupExclusionSql($excludedGroupIds, 'ub.user_id');
 
         $this->db->insert($sql);
     }
@@ -500,7 +500,7 @@ class RecalculateService
 
     private function tagExclusionSql(array $ids, string $discussionIdCol): string
     {
-        if (empty($ids) || !$this->extensions->isEnabled('flarum-tags')) {
+        if (empty($ids) || ! $this->extensions->isEnabled('flarum-tags')) {
             return '';
         }
 

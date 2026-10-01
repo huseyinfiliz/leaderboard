@@ -13,7 +13,7 @@ class PostCreatedListener
 
     public function handle(Posted $event): void
     {
-        if (!$event->actor) {
+        if (! $event->actor) {
             return;
         }
 

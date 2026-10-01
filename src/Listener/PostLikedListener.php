@@ -16,7 +16,7 @@ class PostLikedListener
         $postAuthor = $event->post->user;
         $liker = $event->user;
 
-        if (!$postAuthor) {
+        if (! $postAuthor) {
             return;
         }
 
@@ -25,7 +25,7 @@ class PostLikedListener
         }
 
         // Award points to post author (skip self-like)
-        if ($liker->id !== $postAuthor->id && !$this->pointService->isExcludedByGroup($postAuthor)) {
+        if ($liker->id !== $postAuthor->id && ! $this->pointService->isExcludedByGroup($postAuthor)) {
             $points = $this->pointService->getPointsForReason('like_received');
 
             $this->pointService->award(
@@ -39,7 +39,7 @@ class PostLikedListener
         }
 
         // Award points to the liker for giving a like
-        if (!$this->pointService->isExcludedByGroup($liker)) {
+        if (! $this->pointService->isExcludedByGroup($liker)) {
             $points = $this->pointService->getPointsForReason('like_given');
 
             $this->pointService->award(
