@@ -46,7 +46,7 @@ class ListLeaderboardController implements RequestHandlerInterface
         $period = is_array($filter) ? Arr::get($filter, 'period', 'all') : 'all';
         $section = is_array($filter) ? Arr::get($filter, 'section', '') : '';
 
-        $excludedGroupIds = $this->getExcludedGroupIds();
+        $excludedGroupIds = $this->pointService->getExcludedGroupIds();
 
         switch ($section) {
             case 'podium':
@@ -315,18 +315,5 @@ class ListLeaderboardController implements RequestHandlerInterface
             default:
                 return $now->copy()->startOfDay();
         }
-    }
-
-    protected function getExcludedGroupIds(): array
-    {
-        $value = $this->settings->get('huseyinfiliz-leaderboard.excluded_groups', '');
-
-        if (empty($value)) {
-            return [];
-        }
-
-        $decoded = json_decode($value, true);
-
-        return is_array($decoded) ? $decoded : [];
     }
 }

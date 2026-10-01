@@ -131,14 +131,16 @@ class RecalculateService
         $pointsCase = $this->pointService->buildPointsCaseSql();
         $p = $this->prefix;
 
-        $this->db->table('leaderboard_user_totals')->delete();
+        $this->db->transaction(function () use ($pointsCase, $p) {
+            $this->db->table('leaderboard_user_totals')->delete();
 
-        $sql = "INSERT INTO {$p}leaderboard_user_totals (user_id, points_total)
-                SELECT user_id, SUM({$pointsCase['sql']})
-                FROM {$p}leaderboard_points
-                GROUP BY user_id";
+            $sql = "INSERT INTO {$p}leaderboard_user_totals (user_id, points_total)
+                    SELECT user_id, SUM({$pointsCase['sql']})
+                    FROM {$p}leaderboard_points
+                    GROUP BY user_id";
 
-        $this->db->insert($sql, $pointsCase['bindings']);
+            $this->db->insert($sql, $pointsCase['bindings']);
+        });
     }
 
     // ──────────────────────────────────────────────────────────────

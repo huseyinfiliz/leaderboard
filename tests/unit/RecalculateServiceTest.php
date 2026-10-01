@@ -37,6 +37,7 @@ class RecalculateServiceTest extends TestCase
         $this->pointService->shouldReceive('getExcludedGroupIds')->andReturn([])->byDefault();
         $this->pointService->shouldReceive('getExcludedTagIds')->andReturn([])->byDefault();
         $this->db->shouldReceive('getTablePrefix')->andReturn('')->byDefault();
+        $this->db->shouldReceive('transaction')->andReturnUsing(fn ($callback) => $callback())->byDefault();
     }
 
     protected function tearDown(): void

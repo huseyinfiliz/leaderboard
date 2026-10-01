@@ -38,19 +38,21 @@ class PointService
             return;
         }
 
-        $this->ensureUserTotal($user);
+        $this->db->transaction(function () use ($user, $points, $reason, $subjectId, $subjectType, $actorId) {
+            $this->ensureUserTotal($user);
 
-        LeaderboardPoint::create([
-            'user_id' => $user->id,
-            'reason' => $reason,
-            'subject_id' => $subjectId,
-            'subject_type' => $subjectType,
-            'actor_id' => $actorId,
-            'created_at' => Carbon::now(),
-        ]);
+            LeaderboardPoint::create([
+                'user_id' => $user->id,
+                'reason' => $reason,
+                'subject_id' => $subjectId,
+                'subject_type' => $subjectType,
+                'actor_id' => $actorId,
+                'created_at' => Carbon::now(),
+            ]);
 
-        LeaderboardUserTotal::where('user_id', $user->id)
-            ->increment('points_total', $points);
+            LeaderboardUserTotal::where('user_id', $user->id)
+                ->increment('points_total', $points);
+        });
 
         if ($reason !== 'daily_login') {
             $this->checkDailyLogin($user);
@@ -94,31 +96,33 @@ class PointService
 
     public function revokeBulkBySubject(string $reason, int $subjectId, ?string $subjectType = null, ?int $actorId = null): void
     {
-        $query = LeaderboardPoint::where('reason', $reason)
-            ->where('subject_id', $subjectId);
+        $this->db->transaction(function () use ($reason, $subjectId, $subjectType, $actorId) {
+            $query = LeaderboardPoint::where('reason', $reason)
+                ->where('subject_id', $subjectId);
 
-        if ($subjectType !== null) {
-            $query->where('subject_type', $subjectType);
-        }
-
-        if ($actorId !== null) {
-            $query->where('actor_id', $actorId);
-        }
-
-        $pointsPerAction = $this->getPointsForReason($reason);
-
-        if ($pointsPerAction != 0) {
-            $countsByUser = (clone $query)->selectRaw('user_id, COUNT(*) as cnt')
-                ->groupBy('user_id')
-                ->pluck('cnt', 'user_id');
-
-            foreach ($countsByUser as $userId => $count) {
-                LeaderboardUserTotal::where('user_id', $userId)
-                    ->decrement('points_total', $count * $pointsPerAction);
+            if ($subjectType !== null) {
+                $query->where('subject_type', $subjectType);
             }
-        }
 
-        $query->delete();
+            if ($actorId !== null) {
+                $query->where('actor_id', $actorId);
+            }
+
+            $pointsPerAction = $this->getPointsForReason($reason);
+
+            if ($pointsPerAction != 0) {
+                $countsByUser = (clone $query)->selectRaw('user_id, COUNT(*) as cnt')
+                    ->groupBy('user_id')
+                    ->pluck('cnt', 'user_id');
+
+                foreach ($countsByUser as $userId => $count) {
+                    LeaderboardUserTotal::where('user_id', $userId)
+                        ->decrement('points_total', $count * $pointsPerAction);
+                }
+            }
+
+            $query->delete();
+        });
     }
 
     public function ensureUserTotal(User $user): void
@@ -170,7 +174,7 @@ class PointService
         $today = Carbon::today()->toDateString();
         $cacheKey = "leaderboard_daily_login:{$user->id}:{$today}";
 
-        if ($this->cache->has($cacheKey)) {
+        if (!$this->cache->add($cacheKey, true, 86400)) {
             return;
         }
 
@@ -181,8 +185,6 @@ class PointService
             ->exists();
 
         if ($alreadyAwarded) {
-            $this->cache->put($cacheKey, true, 86400);
-
             return;
         }
 
@@ -191,8 +193,6 @@ class PointService
         if ($points !== 0) {
             $this->award($user, $points, 'daily_login');
         }
-
-        $this->cache->put($cacheKey, true, 86400);
     }
 
     public function getExcludedTagIds(): array
