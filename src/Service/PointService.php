@@ -7,9 +7,11 @@ use Flarum\Discussion\Discussion;
 use Flarum\Extension\ExtensionManager;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
+use HuseyinFiliz\Leaderboard\Event\PointsUpdated;
 use HuseyinFiliz\Leaderboard\Model\LeaderboardPoint;
 use HuseyinFiliz\Leaderboard\Model\LeaderboardUserTotal;
 use Illuminate\Contracts\Cache\Repository as Cache;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\ConnectionInterface;
 
 class PointService
@@ -28,7 +30,7 @@ class PointService
         'downvote_received' => -1,
     ];
 
-    public function __construct(protected SettingsRepositoryInterface $settings, protected Cache $cache, protected ConnectionInterface $db, protected ExtensionManager $extensions)
+    public function __construct(protected SettingsRepositoryInterface $settings, protected Cache $cache, protected ConnectionInterface $db, protected ExtensionManager $extensions, protected ?Dispatcher $events = null)
     {
     }
 
@@ -54,6 +56,8 @@ class PointService
                 ->increment('points_total', $points);
         });
 
+        $this->events?->dispatch(new PointsUpdated($user));
+
         if ($reason !== 'daily_login') {
             $this->checkDailyLogin($user);
         }
@@ -61,7 +65,7 @@ class PointService
 
     public function revoke(User $user, string $reason, ?int $subjectId = null, ?string $subjectType = null, ?int $actorId = null): void
     {
-        $this->db->transaction(function () use ($user, $reason, $subjectId, $subjectType, $actorId) {
+        $changed = $this->db->transaction(function () use ($user, $reason, $subjectId, $subjectType, $actorId) {
             $query = LeaderboardPoint::where('user_id', $user->id)
                 ->where('reason', $reason);
 
@@ -80,7 +84,7 @@ class PointService
             $count = $query->lockForUpdate()->count();
 
             if ($count === 0) {
-                return;
+                return false;
             }
 
             $query->delete();
@@ -90,13 +94,21 @@ class PointService
             if ($totalPoints !== 0) {
                 LeaderboardUserTotal::where('user_id', $user->id)
                     ->decrement('points_total', $totalPoints);
+
+                return true;
             }
+
+            return false;
         });
+
+        if ($changed) {
+            $this->events?->dispatch(new PointsUpdated($user));
+        }
     }
 
     public function revokeBulkBySubject(string $reason, int $subjectId, ?string $subjectType = null, ?int $actorId = null): void
     {
-        $this->db->transaction(function () use ($reason, $subjectId, $subjectType, $actorId) {
+        $affected = $this->db->transaction(function () use ($reason, $subjectId, $subjectType, $actorId) {
             $query = LeaderboardPoint::where('reason', $reason)
                 ->where('subject_id', $subjectId);
 
@@ -109,6 +121,7 @@ class PointService
             }
 
             $pointsPerAction = $this->getPointsForReason($reason);
+            $affected = [];
 
             if ($pointsPerAction != 0) {
                 $countsByUser = (clone $query)->selectRaw('user_id, COUNT(*) as cnt')
@@ -119,10 +132,20 @@ class PointService
                     LeaderboardUserTotal::where('user_id', $userId)
                         ->decrement('points_total', $count * $pointsPerAction);
                 }
+
+                $affected = $countsByUser->keys()->all();
             }
 
             $query->delete();
+
+            return $affected;
         });
+
+        if ($this->events && $affected) {
+            foreach (User::query()->whereIn('id', $affected)->get() as $user) {
+                $this->events->dispatch(new PointsUpdated($user));
+            }
+        }
     }
 
     public function ensureUserTotal(User $user): void

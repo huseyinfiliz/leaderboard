@@ -173,6 +173,24 @@ Rankings are filtered by the `created_at` timestamp of each point record:
 | Yearly | Last 365 days |
 | All Time | No filter |
 
+#### Events for other extensions
+
+Leaderboard dispatches two events, so other extensions can react to points without polling the totals table:
+
+| Event | When | Payload |
+|-------|------|---------|
+| `HuseyinFiliz\Leaderboard\Event\PointsUpdated` | A member's total changed (points awarded or revoked) | `$user` |
+| `HuseyinFiliz\Leaderboard\Event\PointsRecalculated` | Every total was rebuilt, e.g. by the Recalculate tool | — |
+
+Both are dispatched after the change is committed, so a listener reading `leaderboard_user_totals` sees the new value. Nothing is dispatched when nothing changed.
+
+```php
+(new Extend\Event())
+    ->listen(\HuseyinFiliz\Leaderboard\Event\PointsUpdated::class, function ($event) {
+        // $event->user's points total has just changed
+    }),
+```
+
 ## 🌍 Translations
 
 This extension comes with English translations. Community translations are welcome!
