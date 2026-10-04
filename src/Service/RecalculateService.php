@@ -3,6 +3,8 @@
 namespace HuseyinFiliz\Leaderboard\Service;
 
 use Flarum\Extension\ExtensionManager;
+use HuseyinFiliz\Leaderboard\Event\PointsRecalculated;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\ConnectionInterface;
 
 class RecalculateService
@@ -25,7 +27,8 @@ class RecalculateService
     public function __construct(
         protected PointService $pointService,
         protected ConnectionInterface $db,
-        protected ExtensionManager $extensions
+        protected ExtensionManager $extensions,
+        protected ?Dispatcher $events = null
     ) {
         $this->prefix = $db->getTablePrefix();
     }
@@ -141,6 +144,8 @@ class RecalculateService
 
             $this->db->insert($sql, $pointsCase['bindings']);
         });
+
+        $this->events?->dispatch(new PointsRecalculated());
     }
 
     // ──────────────────────────────────────────────────────────────

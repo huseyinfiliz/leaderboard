@@ -12,8 +12,10 @@
 namespace HuseyinFiliz\Leaderboard\Tests\Unit;
 
 use Flarum\Extension\ExtensionManager;
+use HuseyinFiliz\Leaderboard\Event\PointsRecalculated;
 use HuseyinFiliz\Leaderboard\Service\PointService;
 use HuseyinFiliz\Leaderboard\Service\RecalculateService;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\ConnectionInterface;
 use Mockery as m;
 use PHPUnit\Framework\Attributes\Test;
@@ -177,5 +179,25 @@ class RecalculateServiceTest extends TestCase
 
         $service = new RecalculateService($this->pointService, $this->db, $this->extensions);
         $service->executeSyncStep(0);
+    }
+
+    #[Test]
+    public function test_rebuild_totals_dispatches_points_recalculated(): void
+    {
+        $this->pointService->shouldReceive('buildPointsCaseSql')->once()->andReturn([
+            'sql' => 'CASE reason WHEN ? THEN ? ELSE 0 END',
+            'bindings' => ['discussion_started', 1],
+        ]);
+
+        $totalsTable = m::mock();
+        $totalsTable->shouldReceive('delete')->once();
+        $this->db->shouldReceive('table')->with('leaderboard_user_totals')->andReturn($totalsTable);
+        $this->db->shouldReceive('insert')->once();
+
+        $events = m::mock(Dispatcher::class);
+        $events->shouldReceive('dispatch')->once()->with(m::type(PointsRecalculated::class));
+
+        $service = new RecalculateService($this->pointService, $this->db, $this->extensions, $events);
+        $service->rebuildTotals();
     }
 }
